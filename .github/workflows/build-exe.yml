@@ -1,0 +1,34 @@
+name: build-exe
+on:
+  push:
+    tags: ["v*"]
+  pull_request:
+  workflow_dispatch:
+jobs:
+  exe:
+    runs-on: windows-2022
+    defaults:
+      run:
+        shell: bash
+        working-directory: pse-rstdp
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - name: Install
+        run: |
+          python -m venv .venv
+          .venv/Scripts/pip install -e . pyinstaller
+      - name: Build exe
+        run: bash packaging/build_exe.sh
+      - name: Smoke (version)
+        shell: pwsh
+        run: |
+          $exe = Get-ChildItem ..\dist\PSE-RSTDP-*-windows-x64.exe | Select-Object -First 1
+          & $exe.FullName --version
+          if ($LASTEXITCODE -ne 0) { throw "version check failed ($LASTEXITCODE)" }
+      - uses: actions/upload-artifact@v4
+        with:
+          name: pse-rstdp-exe
+          path: dist/*.exe
