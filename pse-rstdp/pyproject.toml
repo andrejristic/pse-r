@@ -1,0 +1,22 @@
+[project]
+name = "pse-rstdp"
+version = "3.0.0"
+description = "PSE R-STDP: reward-modulated STDP experiments on a small spiking network."
+license = "GPL-3.0-or-later"
+authors = [{ name = "Andrej Ristic" }]
+requires-python = ">=3.10"
+dependencies = ["numpy>=1.24"]
+
+[project.scripts]
+pse-rstdp = "pse_rstdp.cli:main"
+
+[build-system]
+requires = ["setuptools>=68"]
+build-backend = "setuptools.build_meta"
+
+[tool.setuptools.packages.find]
+where = ["."]
+include = ["pse_rstdp*"]
+
+[tool.setuptools.package-data]
+pse_rstdp = ["*.json"]
